@@ -1,4 +1,11 @@
 <div id="physicsengine-ui">
-
-
+	<canvas id="physicsengine-world"></canvas>
+	<button id="physicsengine-settings-button">Settings</button>
+	<div id="physicsengine-settings-dialog" title="Settings">
+		<label for="physicsengine-settings-gravity-slider">Gravity: <span><%= gravity %></span></label>
+		<div id="physicsengine-settings-gravity-slider"></div>
+		
+		<label for="physicsengine-settings-spheres-slider">Number of spheres: <span><%= spheres %></span></label>
+		<div id="physicsengine-settings-spheres-slider"></div>
+	</div>
 </div>
