@@ -1,0 +1,1 @@
+C({"name": "Physicsengine.Controllers.Main.prototype.loadUI", "params": {}, "ret": {"description": "<p>void</p>", "type": undefined}, "type": "function", "parent": "Physicsengine.Controllers.Main.prototype", "comment": "<p>Loads the user interface</p>", "children": []})

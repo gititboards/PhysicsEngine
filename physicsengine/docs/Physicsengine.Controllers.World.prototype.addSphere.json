@@ -1,0 +1,1 @@
+C({"name": "Physicsengine.Controllers.World.prototype.addSphere", "params": {}, "ret": {"description": "<p>void</p>", "type": undefined}, "type": "function", "parent": "Physicsengine.Controllers.World.prototype", "comment": "<p>Add sphere</p>\n\n<p>Adds a sphere to the world canvas</p>", "children": []})

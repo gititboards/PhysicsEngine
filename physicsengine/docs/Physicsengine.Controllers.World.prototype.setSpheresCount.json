@@ -1,0 +1,1 @@
+C({"name": "Physicsengine.Controllers.World.prototype.setSpheresCount", "params": {"count": {"description": "", "type": "Number", "optional": false, "order": 0, "name": "count"}}, "ret": {"description": "<p>void</p>", "type": undefined}, "type": "function", "parent": "Physicsengine.Controllers.World.prototype", "comment": "<p>Set sphere count</p>", "children": []})

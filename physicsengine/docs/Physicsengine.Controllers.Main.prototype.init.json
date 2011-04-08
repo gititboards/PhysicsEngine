@@ -1,0 +1,1 @@
+C({"name": "Physicsengine.Controllers.Main.prototype.init", "params": {}, "ret": {"description": "<p>void</p>", "type": undefined}, "type": "function", "parent": "Physicsengine.Controllers.Main.prototype", "comment": "<p>Initializes the PhysicsEngine</p>", "children": []})

@@ -1,0 +1,1 @@
+C({"name": "Physicsengine.Controllers.World.prototype.getGravity", "params": {}, "ret": {"description": "<p>gravity</p>", "type": "Number"}, "type": "function", "parent": "Physicsengine.Controllers.World.prototype", "comment": "<p>Get Gravity</p>", "children": []})

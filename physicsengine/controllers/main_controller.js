@@ -17,6 +17,8 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 
 	/**
 	 * Initializes the PhysicsEngine
+	 * 
+	 * @return	void
 	 */
 	
 	init: function() {
@@ -31,6 +33,8 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 	
 	/**
 	 * Loads the user interface
+	 * 
+	 * @return	void
 	 */
 	
 	loadUI: function() {
@@ -91,11 +95,17 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 	
 	/**
 	 * Init World Canvas
+	 * 
+	 * @return	void
 	 */
 	
 	initWorld: function() {
 		
+		//attach world controller to the drawing surface
 		this.world = $('#physicsengine-world').physicsengine_world();
+		
+		//add a sphere
+		this.world.controller().addSphere();
 		
 	}
 });

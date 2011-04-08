@@ -1,0 +1,1 @@
+C({"name": "Physicsengine.Controllers.Main.prototype", "type": "prototype", "parent": "Physicsengine.Controllers.Main", "comment": "", "children": ["Physicsengine.Controllers.Main.prototype.init", "Physicsengine.Controllers.Main.prototype.loadUI", "Physicsengine.Controllers.Main.prototype.initWorld"]})

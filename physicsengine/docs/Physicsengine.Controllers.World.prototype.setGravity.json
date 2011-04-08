@@ -1,0 +1,1 @@
+C({"name": "Physicsengine.Controllers.World.prototype.setGravity", "params": {"gravity": {"description": "", "type": "Number", "optional": false, "order": 0, "name": "gravity"}}, "ret": {"description": "<p>void</p>", "type": undefined}, "type": "function", "parent": "Physicsengine.Controllers.World.prototype", "comment": "<p>Set Gravity</p>", "children": []})
