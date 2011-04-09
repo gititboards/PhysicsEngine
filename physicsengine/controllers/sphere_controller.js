@@ -1,7 +1,7 @@
 /**
  * @tag controllers, home
  */
-jQuery.Controller.extend('Physicsengine.Controllers.Sphere',
+Physicsengine.Controllers.Object.extend('Physicsengine.Controllers.Sphere',
 /* @Static */
 {
 
@@ -9,11 +9,6 @@ jQuery.Controller.extend('Physicsengine.Controllers.Sphere',
 /* @Prototype */
 {
 
-	positionX: 100,
-	positionY: 100,
-	directionX: 0,
-	directionY: 0,
-	speed: 0,
 	radius: 20,
 	color: '#0073EA',
 	
@@ -29,67 +24,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.Sphere',
 	
 	},
 	
-	
-	/**
-	 * Set direction
-	 * 
-	 * @param	{Number} x
-	 * @param	{Number} y
-	 * @return	void
-	 */
-	
-	setDirection: function(x, y) {
-		
-		this.directionX = x;
-		this.directionY = y;
-		
-	},
-	
-	
-	/**
-	 * Set speed
-	 * 
-	 * @param	{Number} speed 		speed in pixels per second
-	 * @return	void
-	 */
-	
-	setSpeed: function(speed) {
-	
-		this.speed = speed;
-		
-	},
-	
-	
-	/**
-	 * Set radius
-	 * 
-	 * @param	{Number} radius 		radius in pixels
-	 * @return	void
-	 */
-	
-	setRadius: function(radius) {
-	
-		this.radius = radius;
-		
-	},
-	
-	
-	/**
-	 * Set position
-	 * 
-	 * @param	{Number} x
-	 * @param	{Number} y
-	 * @return	void
-	 */
-	
-	setPosition: function(x, y) {
-	
-		this.positionX = x;
-		this.positionY = y;
-		
-	},
-	
-	
+
 	/**
 	 * Render object
 	 * 

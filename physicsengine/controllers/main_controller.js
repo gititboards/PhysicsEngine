@@ -28,6 +28,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		
 		//init world canvas
 		this.initWorld();
+		
 	},
 	
 	
@@ -47,8 +48,10 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		
 		//init settings dialog button
 		$('#physicsengine-settings-button').button().click(function() {
+			
 			//open the settings dialog
 			$('#physicsengine-settings-dialog').dialog('open');
+			
 		});
 		
 		//init settings dialog
@@ -81,7 +84,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		//init number of spheres slider
 		$('#physicsengine-settings-spheres-slider').slider({
 			min: 1,
-			max: 1000,
+			max: 30,
 			step: 1,
 			value: Physicsengine.Controllers.Main.defaultSpheresCount,
 			slide: function(ev, ui) {

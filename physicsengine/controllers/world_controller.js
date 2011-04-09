@@ -83,8 +83,9 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 
 		//instantiate a sphere controller
 		var sphere = $('<div />').physicsengine_sphere().controller();
-		sphere.setRadius(radius);
-		sphere.setPosition(positionX, positionY);
+		sphere.radius = radius;
+		sphere.positionX = positionX;
+		sphere.positionY = positionY;
 		
 		//add the sphere to the list with all objects
 		this.objects.push(sphere);
@@ -102,6 +103,8 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	
 	render: function() {
 
+		var speedFactor = 1000 / this.renderInterval;
+		
 		var ref = this;
 		var loop = function() {
 
@@ -112,9 +115,20 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 			for(var i = 0; i < ref.objects.length; i++) {
 
 				var object = ref.objects[i];
+				
+				
+				
+				//set new position for object according to speed and direction
+				var length = object.speed / speedFactor;
+				var x = length * Math.cos(object.direction);
+				var y = length * Math.sin(object.direction);
+				object.positionX = object.positionX + x;
+				object.positionY = object.positionY - y;
 
 				//render the sphere to the canvas
 				object.renderObject(ref.canvas2dContext);
+				
+				
 				
 			}
 			
@@ -178,13 +192,45 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 			//is the mouse position inside the object?
 			if(object.isCoordinateInObject(ev.clientX, ev.clientY)) {
 				
+				var posX = ev.clientX;
+				var posY = ev.clientY;
+				var dragPosX = posX;
+				var dragPosY = posY;
+				var dragLength = 0;
+				var speed = 0;
+				var direction = 0;
+				
+				//set speed of the object to 0 as we are now dragging it
+				object.speed = 0;
+				
+				//get dragging speed and direction
+				var speedInterval = window.setInterval(function() {
+					
+					var posDiffX = dragPosX - posX;
+					var posDiffY = posY - dragPosY;
+					
+					//calc speed
+					dragLength = Math.sqrt(Math.pow(Math.abs(posDiffX), 2) + Math.pow(Math.abs(posDiffY), 2));
+					speed = dragLength * 10;
+					
+					//calc direction
+					direction = Math.atan2(posDiffY, posDiffX);
+
+					posX = dragPosX;
+					posY = dragPosY;
+					
+				}, 100);
+				
 				//track mouse movements
 				$(this.element).bind('mousemove.dragging', $.proxy(function(ev) {
-					
+
 					//set new position
-					object.setPosition(ev.clientX, ev.clientY);
-					
-					//TODO - add acceleration
+					object.positionX = ev.clientX;
+					object.positionY = ev.clientY;
+
+					//store mouse position so the speed interval can calculate the pixel diff
+					dragPosX = ev.clientX;
+					dragPosY = ev.clientY;
 
 				}, this));
 				
@@ -193,6 +239,13 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 
 					$(this.element).unbind('mousemove.dragging mouseup.dragging');
 					
+					//stop speed checking interval
+					window.clearInterval(speedInterval);
+					
+					//set the new speed and direction for the object
+					object.direction = direction;
+					object.speed = speed;
+										
 				}, this));				
 				
 				break;
