@@ -9,7 +9,7 @@ steal.plugins(
 	
 	.css('resources/css/reset-min', 'resources/css/main', 'resources/css/flick/jquery-ui-1.8.11.custom')	// loads styles
 
-	.resources('js/jquery-ui-1.8.11.custom.min')					// 3rd party script's (like jQueryUI), in resources folder
+	.resources('js/jquery-ui-1.8.11.custom.min', 'js/helper.js')					// 3rd party script's (like jQueryUI), in resources folder
 
 	.models()						// loads files in models folder 
 

@@ -55,11 +55,26 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		});
 		
 		//init add sphere button
-		$('#physicsengine-addsphere-button').button().click(function() {
+		$('#physicsengine-addsphere-button').button().mouseup($.proxy(function(ev) {
 			
+			//update/disable button
+			$(ev.target).button('option', 'label', 'Click on an empty space to place the sphere').button('disable');
 			
+			//listen for click event on world canvas to place the sphere
+			$(this.world).bind('click.newsphere', $.proxy(function(ev2) {
+				
+				//add the sphere
+				if(this.world.controller().addSphere(40, ev2.clientX, ev2.clientY)) {
+				
+					//added successfully -> enable button again
+					$(this.world).unbind('click.newsphere');
+					$(ev.target).button('option', 'label', 'Add sphere').button('enable');
+					
+				}
+				
+			}, this));
 			
-		});
+		}, this));
 		
 		//init settings dialog
 		$('#physicsengine-settings-dialog').dialog({

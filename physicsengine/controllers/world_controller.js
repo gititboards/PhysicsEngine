@@ -49,7 +49,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	 * @param	{Number} radius
 	 * @param	{Number} positionX
 	 * @param	{Number} positionY
-	 * @return	void
+	 * @return	{Boolean}
 	 */
 	
 	addSphere: function(radius, positionX, positionY) {
@@ -59,10 +59,32 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 		sphere.radius = radius;
 		sphere.positionX = positionX;
 		sphere.positionY = positionY;
+		sphere.color = 'rgb(' + randomNumber(0, 255) + ', ' + randomNumber(0, 255) + ', ' + + randomNumber(0, 255) + ')';
+		
+		//check if the sphere collides with any other sphere
+		for(var i = 0; i < this.objects.length; i++) {
+			var object = this.objects[i];
+			
+			if(sphere.checkCollisionWithSphere(object)) {
+
+				//display error dialog
+				$('<div title="Error occured">Could not place the sphere as it collides with another one. Please choose a different location.</div>').dialog({
+					buttons: {
+						'Ok': function() { 
+							$(this).dialog('destroy'); 
+						}
+					}
+				});
+				
+				return false;
+				
+			}
+		}
 		
 		//add the sphere to the list with all objects
 		this.objects.push(sphere);
 		
+		return true;
 	},
 	
 	
