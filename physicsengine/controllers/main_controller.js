@@ -58,7 +58,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		$('#physicsengine-addsphere-button').button().mouseup($.proxy(function(ev) {
 			
 			//update/disable button
-			$(ev.target).button('option', 'label', 'Click on an empty space to place the sphere').button('disable');
+			$(ev.currentTarget).button('option', 'label', 'Click on an empty space to place the sphere').button('disable');
 			
 			//listen for click event on world canvas to place the sphere
 			$(this.world).bind('click.newsphere', $.proxy(function(ev2) {
@@ -68,7 +68,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 				
 					//added successfully -> enable button again
 					$(this.world).unbind('click.newsphere');
-					$(ev.target).button('option', 'label', 'Add sphere').button('enable');
+					$(ev.currentTarget).button('option', 'label', 'Add sphere').button('enable');
 					
 				}
 				
