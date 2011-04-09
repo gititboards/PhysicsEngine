@@ -49,7 +49,9 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	 */
 	
 	setGravity: function(gravity) {
+		
 		this.gravity = gravity;
+		
 	},
 	
 	
@@ -60,19 +62,8 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	 */
 	
 	getGravity: function() {
-		return this.gravity;
-	},
-	
-	
-	/**
-	 * Set sphere count
-	 * 
-	 * @param	{Number} count 
-	 * @return	void
-	 */
-	
-	setSpheresCount: function(count) {
 		
+		return this.gravity;
 		
 	},
 	
@@ -149,6 +140,25 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 		
 		this.doRender = false;
 		
+	},
+	
+	
+	/**
+	 * Reset
+	 * 
+	 * Empty canvas
+	 * 
+	 * @return	void
+	 */
+	
+	reset: function() {
+
+		//remove objects
+		this.objects = [];
+		
+		//clear canvas
+		this.canvas2dContext.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+	
 	},
 	
 	

@@ -13,7 +13,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 {
 	
 	world: null, // reference to the world canvas
-		
+	
 
 	/**
 	 * Initializes the PhysicsEngine
@@ -86,7 +86,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 			value: Physicsengine.Controllers.Main.defaultSpheresCount,
 			slide: function(ev, ui) {
 				$(this).prev().find('span').html(ui.value);
-				ref.world.controller().setSpheresCount(ui.value);
+				ref.world.controller().reset();
 			}
 		});
 		
@@ -105,10 +105,9 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		this.world = $('#physicsengine-world').physicsengine_world();
 		
 		//add a sphere
-		this.world.controller().addSphere(20, 100, 100);
-		this.world.controller().addSphere(20, 200, 200);
+		this.world.controller().addSphere(40, 100, 100);
+		this.world.controller().addSphere(40, 200, 200);
 
-		
 		
 	}
 });
