@@ -21,13 +21,11 @@ jQuery.Controller.extend('Physicsengine.Controllers.Sphere',
 	/**
 	 * Constructor
 	 * 
-	 * @param	{Number} radius		radius in pixel
 	 * @return	void
 	 */
 	
-	init: function(el, radius) {
-	
-		this.radius = radius;
+	init: function() {
+
 	
 	},
 	
@@ -58,6 +56,20 @@ jQuery.Controller.extend('Physicsengine.Controllers.Sphere',
 	setSpeed: function(speed) {
 	
 		this.speed = speed;
+		
+	},
+	
+	
+	/**
+	 * Set radius
+	 * 
+	 * @param	{Number} radius 		radius in pixels
+	 * @return	void
+	 */
+	
+	setRadius: function(radius) {
+	
+		this.radius = radius;
 		
 	},
 	

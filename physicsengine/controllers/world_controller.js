@@ -83,13 +83,17 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	 * Adds a sphere to the world canvas
 	 * 
 	 * @param	{Number} radius
+	 * @param	{Number} positionX
+	 * @param	{Number} positionY
 	 * @return	void
 	 */
 	
-	addSphere: function(radius) {
+	addSphere: function(radius, positionX, positionY) {
 
 		//instantiate a sphere controller
-		var sphere = $('<div />').physicsengine_sphere(radius);
+		var sphere = $('<div />').physicsengine_sphere().controller();
+		sphere.setRadius(radius);
+		sphere.setPosition(positionX, positionY);
 		
 		//add the sphere to the list with all objects
 		this.objects.push(sphere);
@@ -107,26 +111,27 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	
 	render: function() {
 
-		var loop = $.proxy(function() {
+		var ref = this;
+		var loop = function() {
 
 			//clear canvas
-			this.canvas2dContext.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
+			ref.canvas2dContext.clearRect(0, 0, ref.canvasWidth, ref.canvasHeight);
 			
 			//render all objects
-			for(var i = 0; i < this.objects.length; i++) {
+			for(var i = 0; i < ref.objects.length; i++) {
 
-				var object = this.objects[i].controller();
+				var object = ref.objects[i];
 
 				//render the sphere to the canvas
-				object.renderObject(this.canvas2dContext);
+				object.renderObject(ref.canvas2dContext);
 				
 			}
 			
-			if(this.doRender) {
-				window.setTimeout(loop, this.renderInterval);
+			if(ref.doRender) {
+				window.setTimeout(loop, ref.renderInterval);
 			}
 			
-		}, this);
+		};
 
 		//start loop
 		loop();
@@ -158,11 +163,11 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 		
 		//check if the user tries to drag an object
 		for(var i = 0; i < this.objects.length; i++) {
-			var object = this.objects[i].controller();
-			
+			var object = this.objects[i];
+
 			//is the mouse position inside the object?
 			if(object.isCoordinateInObject(ev.clientX, ev.clientY)) {
-
+				
 				//track mouse movements
 				$(this.element).bind('mousemove.dragging', $.proxy(function(ev) {
 					
@@ -180,6 +185,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 					
 				}, this));				
 				
+				break;
 				
 			}
 			
