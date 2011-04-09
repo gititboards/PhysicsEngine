@@ -95,6 +95,45 @@ jQuery.Controller.extend('Physicsengine.Controllers.Sphere',
 		context.closePath();
 		context.fill();
 		
+	},
+	
+	
+	/**
+	 * Is Coordinate In Object
+	 * 
+	 * Checks whether a coordinate is inside the sphere or not
+	 * 
+	 * @param	{Number} x
+	 * @param	{Number} y
+	 * @return	{Boolean}
+	 */
+	
+	isCoordinateInObject: function(x, y) {
+		
+		var diffX = Math.abs(this.positionX - x);
+		var diffY = Math.abs(this.positionY - y);
+
+		return Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)) <= this.radius;
+		
+	},
+	
+	
+	/**
+	 * Check Collision With Sphere
+	 * 
+	 * Checks if a sphere collides with this one
+	 * 
+	 * @param	{Object} sphere
+	 * @return	{Boolean}
+	 */
+	
+	checkCollisionWithSphere: function(sphere) {
+		
+		var diffX = Math.abs(this.positionX - sphere.controller().positionX);
+		var diffY = Math.abs(this.positionY - sphere.controller().positionY);
+
+		return Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)) <= (this.radius + sphere.controller().radius);
+		
 	}
 	
 });

@@ -105,7 +105,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		this.world = $('#physicsengine-world').physicsengine_world();
 		
 		//add a sphere
-		this.world.controller().addSphere();
+		this.world.controller().addSphere(20);
 		
 	}
 });
