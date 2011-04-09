@@ -76,10 +76,10 @@ Physicsengine.Controllers.Object.extend('Physicsengine.Controllers.Sphere',
 	
 	checkCollisionWithSphere: function(sphere) {
 		
-		var diffX = Math.abs(this.positionX - sphere.controller().positionX);
-		var diffY = Math.abs(this.positionY - sphere.controller().positionY);
+		var diffX = Math.abs(this.positionX - sphere.positionX);
+		var diffY = Math.abs(this.positionY - sphere.positionY);
 
-		return Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)) <= (this.radius + sphere.controller().radius);
+		return Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)) <= (this.radius + sphere.radius);
 		
 	}
 	

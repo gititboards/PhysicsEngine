@@ -116,7 +116,15 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 
 				var object = ref.objects[i];
 				
-				
+				//check for collisions
+				for(var j = 0; j < ref.objects.length; j++) {
+					var otherObject = ref.objects[j];
+					if(object != otherObject && object.checkCollisionWithSphere(otherObject)) {
+						
+						//COLLISION !!!
+						
+					}
+				}
 				
 				//set new position for object according to speed and direction
 				var length = object.speed / speedFactor;
@@ -127,7 +135,6 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 
 				//render the sphere to the canvas
 				object.renderObject(ref.canvas2dContext);
-				
 				
 				
 			}

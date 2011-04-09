@@ -109,7 +109,20 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		
 		//add a sphere
 		this.world.controller().addSphere(40, 100, 100);
+		this.world.controller().addSphere(40, 200, 100);
+		this.world.controller().addSphere(40, 300, 100);
+		this.world.controller().addSphere(40, 400, 100);
+		this.world.controller().addSphere(40, 500, 100);
+		this.world.controller().addSphere(40, 100, 200);
 		this.world.controller().addSphere(40, 200, 200);
+		this.world.controller().addSphere(40, 300, 200);
+		this.world.controller().addSphere(40, 400, 200);
+		this.world.controller().addSphere(40, 500, 200);
+		this.world.controller().addSphere(40, 100, 300);
+		this.world.controller().addSphere(40, 200, 300);
+		this.world.controller().addSphere(40, 300, 300);
+		this.world.controller().addSphere(40, 400, 300);
+		this.world.controller().addSphere(40, 500, 300);
 
 		
 	}
