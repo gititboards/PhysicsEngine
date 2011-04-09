@@ -31,40 +31,13 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 		this.canvasWidth = $(this.element).width();
 		$(this.element).attr('height', this.canvasHeight);
 		$(this.element).attr('width', this.canvasWidth);
-	
+
 		//get the canvas' 2d context
 		this.canvas2dContext = this.element.get(0).getContext("2d");
 		
 		//start renderin
 		this.render();
 
-	},
-	
-	
-	/**
-	 * Set Gravity
-	 * 
-	 * @param	{Number} gravity
-	 * @return	void
-	 */
-	
-	setGravity: function(gravity) {
-		
-		this.gravity = gravity;
-		
-	},
-	
-	
-	/**
-	 * Get Gravity
-	 * 
-	 * @return	{Number} gravity
-	 */
-	
-	getGravity: function() {
-		
-		return this.gravity;
-		
 	},
 	
 	
@@ -123,6 +96,11 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 						
 						//COLLISION !!!
 						
+						//stop dragging
+						$(ref.element).trigger('mouseup.dragging');
+						
+						
+						
 					}
 				}
 				
@@ -174,6 +152,12 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	
 	reset: function() {
 
+		//set height and width in pixel in case it is set in percentage
+		this.canvasHeight = $(this.element).height();
+		this.canvasWidth = $(this.element).width();
+		$(this.element).attr('height', this.canvasHeight);
+		$(this.element).attr('width', this.canvasWidth);
+		
 		//remove objects
 		this.objects = [];
 		

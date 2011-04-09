@@ -6,7 +6,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 {
 	onDocument: true,
 	defaultGravity: 10,
-	defaultSpheresCount: 5
+	defaultFriction: 5
 	
 },
 /* @Prototype */
@@ -43,7 +43,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		//load the template
 		$(document.body).append(this.view('interface', {
 			gravity: Physicsengine.Controllers.Main.defaultGravity,
-			spheres: Physicsengine.Controllers.Main.defaultSpheresCount
+			friction: Physicsengine.Controllers.Main.defaultFriction
 		}));
 		
 		//init settings dialog button
@@ -51,6 +51,13 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 			
 			//open the settings dialog
 			$('#physicsengine-settings-dialog').dialog('open');
+			
+		});
+		
+		//init add sphere button
+		$('#physicsengine-addsphere-button').button().click(function() {
+			
+			
 			
 		});
 		
@@ -77,21 +84,27 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 			value: Physicsengine.Controllers.Main.defaultGravity,
 			slide: function(ev, ui) {
 				$(this).prev().find('span').html(ui.value);
-				ref.world.controller().setGravity(ui.value);
+				ref.world.controller().gravity = ui.value;
 			}
 		});
 		
-		//init number of spheres slider
-		$('#physicsengine-settings-spheres-slider').slider({
+		//init friction slider
+		$('#physicsengine-settings-friction-slider').slider({
 			min: 1,
-			max: 30,
+			max: 100,
 			step: 1,
-			value: Physicsengine.Controllers.Main.defaultSpheresCount,
+			value: Physicsengine.Controllers.Main.defaultFriction,
 			slide: function(ev, ui) {
 				$(this).prev().find('span').html(ui.value);
-				ref.world.controller().reset();
+				ref.world.controller().friction = ui.value;
 			}
 		});
+		
+		//reset world on resize
+		$(window).bind('resize', $.proxy(function() {
+			this.world.controller().reset();
+			this.initWorld();
+		}, this));
 		
 	},
 	
@@ -110,20 +123,6 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		//add a sphere
 		this.world.controller().addSphere(40, 100, 100);
 		this.world.controller().addSphere(40, 200, 100);
-		this.world.controller().addSphere(40, 300, 100);
-		this.world.controller().addSphere(40, 400, 100);
-		this.world.controller().addSphere(40, 500, 100);
-		this.world.controller().addSphere(40, 100, 200);
-		this.world.controller().addSphere(40, 200, 200);
-		this.world.controller().addSphere(40, 300, 200);
-		this.world.controller().addSphere(40, 400, 200);
-		this.world.controller().addSphere(40, 500, 200);
-		this.world.controller().addSphere(40, 100, 300);
-		this.world.controller().addSphere(40, 200, 300);
-		this.world.controller().addSphere(40, 300, 300);
-		this.world.controller().addSphere(40, 400, 300);
-		this.world.controller().addSphere(40, 500, 300);
-
 		
 	}
 });
