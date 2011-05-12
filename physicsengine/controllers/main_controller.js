@@ -104,7 +104,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		var ref = this;
 		$('#physicsengine-settings-gravity-slider').slider({
 			min: 0,
-			max: 1000,
+			max: 10000,
 			step: 1,
 			value: Physicsengine.Controllers.World.defaultGravity,
 			slide: function(ev, ui) {
