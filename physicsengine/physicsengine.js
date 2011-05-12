@@ -13,6 +13,6 @@ steal.plugins(
 
 	.models()						// loads files in models folder 
 
-	.controllers('world', 'object', 'sphere', 'main')					// loads files in controllers folder
+	.controllers('world', 'sphere', 'main')					// loads files in controllers folder
 
 	.views('main/interface', 'world/world');						// adds views to be added to build

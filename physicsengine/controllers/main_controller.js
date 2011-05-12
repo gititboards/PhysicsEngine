@@ -4,9 +4,7 @@
 jQuery.Controller.extend('Physicsengine.Controllers.Main',
 /* @Static */
 {
-	onDocument: true,
-	defaultGravity: 10,
-	defaultFriction: 5
+	onDocument: !(window.QUnit), //do not load the main controller automatically when loaded by QUnit
 	
 },
 /* @Prototype */
@@ -42,12 +40,12 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 
 		//load the template
 		$(document.body).append(this.view('interface', {
-			gravity: Physicsengine.Controllers.Main.defaultGravity,
-			friction: Physicsengine.Controllers.Main.defaultFriction
+			gravity: Physicsengine.Controllers.World.defaultGravity,
+			friction: Physicsengine.Controllers.World.defaultFriction
 		}));
 		
 		//init settings dialog button
-		$('#physicsengine-settings-button').button().click(function() {
+		var settingsButton = $('#physicsengine-settings-button').button().click(function() {
 			
 			//open the settings dialog
 			$('#physicsengine-settings-dialog').dialog('open');
@@ -55,7 +53,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		});
 		
 		//init add sphere button
-		$('#physicsengine-addsphere-button').button().mouseup($.proxy(function(ev) {
+		var addSphereButton = $('#physicsengine-addsphere-button').button().mouseup($.proxy(function(ev) {
 			
 			//update/disable button
 			$(ev.currentTarget).button('option', 'label', 'Click on an empty space to place the sphere').button('disable');
@@ -65,10 +63,21 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 				
 				//add the sphere
 				if(this.world.controller().addSphere(40, ev2.clientX, ev2.clientY)) {
-				
+
 					//added successfully -> enable button again
 					$(this.world).unbind('click.newsphere');
 					$(ev.currentTarget).button('option', 'label', 'Add sphere').button('enable');
+
+				} else {
+				
+					//display error dialog
+					$('<div title="Error occured">Could not place the sphere as it collides with another one. Please choose a different location.</div>').dialog({
+						buttons: {
+							'Ok': function() { 
+								$(this).dialog('destroy'); 
+							}
+						}
+					});
 					
 				}
 				
@@ -76,6 +85,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 			
 		}, this));
 		
+				
 		//init settings dialog
 		$('#physicsengine-settings-dialog').dialog({
 			buttons: {
@@ -94,9 +104,9 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		var ref = this;
 		$('#physicsengine-settings-gravity-slider').slider({
 			min: 0,
-			max: 100,
+			max: 1000,
 			step: 1,
-			value: Physicsengine.Controllers.Main.defaultGravity,
+			value: Physicsengine.Controllers.World.defaultGravity,
 			slide: function(ev, ui) {
 				$(this).prev().find('span').html(ui.value);
 				ref.world.controller().gravity = ui.value;
@@ -105,10 +115,10 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		
 		//init friction slider
 		$('#physicsengine-settings-friction-slider').slider({
-			min: 1,
-			max: 100,
+			min: 0,
+			max: 10,
 			step: 1,
-			value: Physicsengine.Controllers.Main.defaultFriction,
+			value: Physicsengine.Controllers.World.defaultFriction,
 			slide: function(ev, ui) {
 				$(this).prev().find('span').html(ui.value);
 				ref.world.controller().friction = ui.value;
@@ -134,10 +144,9 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		
 		//attach world controller to the drawing surface
 		this.world = $('#physicsengine-world').physicsengine_world();
-		
+				
 		//add a sphere
 		this.world.controller().addSphere(40, 100, 100);
-		this.world.controller().addSphere(40, 200, 100);
 		
 	}
 });

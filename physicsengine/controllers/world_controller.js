@@ -5,17 +5,24 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 /* @Static */
 {
 
+	defaultGravity: 1000,
+	defaultFriction: 0.1,
+	defaultBorderSpeedReduction: 0.8,
+	
 },
 /* @Prototype */
 {
 
-	gravity: 0,
+	gravity: null,
+	friction: null,
+	borderSpeedReduction: null,
 	objects: [],
 	canvasHeight: 0,
 	canvasWidth: 0,
 	canvas2dContext: null,
 	doRender: true, //stop rendering by setting this to false
-	renderInterval: 10, //interval in ms 
+	renderInterval: 10, //interval in ms ,
+	
 	
 	
 	/**
@@ -26,6 +33,11 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	
 	init: function() {
 
+		//set default values
+		this.gravity = Physicsengine.Controllers.World.defaultGravity;
+		this.friction = Physicsengine.Controllers.World.defaultFriction;
+		this.borderSpeedReduction = Physicsengine.Controllers.World.defaultBorderSpeedReduction;
+	
 		//set height and width in pixel in case it is set in percentage
 		this.canvasHeight = $(this.element).height();
 		this.canvasWidth = $(this.element).width();
@@ -36,7 +48,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 		this.canvas2dContext = this.element.get(0).getContext("2d");
 		
 		//start renderin
-		this.render();
+		this.startRendering();
 
 	},
 	
@@ -59,23 +71,14 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 		sphere.radius = radius;
 		sphere.positionX = positionX;
 		sphere.positionY = positionY;
-		sphere.color = 'rgb(' + randomNumber(0, 255) + ', ' + randomNumber(0, 255) + ', ' + + randomNumber(0, 255) + ')';
+		//sphere.color = 'rgb(' + randomNumber(0, 255) + ', ' + randomNumber(0, 255) + ', ' + + randomNumber(0, 255) + ')';
 		
 		//check if the sphere collides with any other sphere
 		for(var i = 0; i < this.objects.length; i++) {
 			var object = this.objects[i];
 			
-			if(sphere.checkCollisionWithSphere(object)) {
+			if(sphere.checkCollisionWith(object) || sphere.checkCollisionWith(this)) {
 
-				//display error dialog
-				$('<div title="Error occured">Could not place the sphere as it collides with another one. Please choose a different location.</div>').dialog({
-					buttons: {
-						'Ok': function() { 
-							$(this).dialog('destroy'); 
-						}
-					}
-				});
-				
 				return false;
 				
 			}
@@ -98,56 +101,86 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	
 	render: function() {
 
-		var speedFactor = 1000 / this.renderInterval;
+		//clear canvas
+		this.canvas2dContext.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
 		
-		var ref = this;
-		var loop = function() {
+		//render all objects
+		for(var i = 0; i < this.objects.length; i++) {
 
-			//clear canvas
-			ref.canvas2dContext.clearRect(0, 0, ref.canvasWidth, ref.canvasHeight);
+			var object = this.objects[i];
 			
-			//render all objects
-			for(var i = 0; i < ref.objects.length; i++) {
+			//check for collisions
+			for(var j = 0; j < this.objects.length; j++) {
 
-				var object = ref.objects[i];
-				
-				//check for collisions
-				for(var j = 0; j < ref.objects.length; j++) {
-					var otherObject = ref.objects[j];
-					if(object != otherObject && object.checkCollisionWithSphere(otherObject)) {
-						
-						//COLLISION !!!
-						
-						//stop dragging
-						$(ref.element).trigger('mouseup.dragging');
-						
-						
-						
-					}
+				var otherObject = this.objects[j];
+					
+				//check for collision with another object
+				if(object != otherObject && object.checkCollisionWith(otherObject)) {
+					
+					//to properly collide the objects we have to reverse one step before the collision happens
+					object = this.reverseCalculateState(this.renderInterval / 1000, object);
+					otherObject = this.reverseCalculateState(this.renderInterval / 1000, otherObject);
+					
+					//collide the objects
+					object.collideWith(otherObject);
+					
+					//step forward
+					object = this.calculateState(this.renderInterval / 1000, object);
+					otherObject = this.calculateState(this.renderInterval / 1000, otherObject);
+					
+				//check for collision with the world borders
+				} else if(object.checkCollisionWith(this)) {
+
+					//to properly collide the objects we have to reverse one step before the collision happens
+					object = this.reverseCalculateState(this.renderInterval / 1000, object);
+					
+					//collide the object with the wall
+					object.collideWith(this);
+					
+					//step forward
+					object = this.calculateState(this.renderInterval / 1000, object);
+					
+				} else {
+					continue;
 				}
 				
-				//set new position for object according to speed and direction
-				var length = object.speed / speedFactor;
-				var x = length * Math.cos(object.direction);
-				var y = length * Math.sin(object.direction);
-				object.positionX = object.positionX + x;
-				object.positionY = object.positionY - y;
-
-				//render the sphere to the canvas
-				object.renderObject(ref.canvas2dContext);
 				
 				
+				//stop dragging
+				$(this.element).trigger('mouseup.dragging-' + i);
+				break;
+
 			}
 			
-			if(ref.doRender) {
-				window.setTimeout(loop, ref.renderInterval);
+			//set new position for object according to speed and direction
+			if(!object.dragging) {
+				object = this.calculateState(this.renderInterval / 1000, object)
 			}
 			
-		};
 
-		//start loop
-		loop();
+			//render the sphere to the canvas
+			object.renderObject(this.canvas2dContext);
+			
+			
+		}
+		
+		if(this.doRender) {
+			window.setTimeout($.proxy(this.render, this), this.renderInterval);
+		}
 
+	},
+	
+
+	/**
+	 * Start rendering
+	 * 
+	 * @return	void
+	 */
+	
+	startRendering: function() {
+		
+		this.render();
+		
 	},
 	
 	
@@ -160,6 +193,48 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	stopRendering: function() {
 		
 		this.doRender = false;
+		
+	},
+	
+	
+	/**
+	 * Calculate State
+	 * 
+	 * @param	{Number} t	time delta
+	 * @param	{Object} object
+	 * 
+	 * @return	{Object}
+	 */
+	
+	calculateState: function(t, object) {
+
+		object.positionX = object.positionX + t * object.speedX;
+		object.positionY = object.positionY + t * object.speedY;
+		object.speedX = object.speedX - object.speedX * this.friction * t;
+		object.speedY = object.speedY - object.speedY * this.friction * t + this.gravity * t;
+
+		return object;
+		
+	},
+	
+	
+	/**
+	 * Reverse Calculate State
+	 * 
+	 * @param	{Number} t	time delta
+	 * @param	{Object} object
+	 * 
+	 * @return	{Object}
+	 */
+	
+	reverseCalculateState: function(t, object) {
+
+		object.speedX = object.speedX + object.speedX * this.friction * t;
+		object.speedY = object.speedY + object.speedY * this.friction * t - this.gravity * t;
+		object.positionX = object.positionX - t * object.speedX;
+		object.positionY = object.positionY - t * object.speedY;
+
+		return object;
 		
 	},
 	
@@ -197,45 +272,42 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	 */
 	
 	'mousedown': function(el, ev) {
-		
+
 		//check if the user tries to drag an object
 		for(var i = 0; i < this.objects.length; i++) {
 			var object = this.objects[i];
 
 			//is the mouse position inside the object?
 			if(object.isCoordinateInObject(ev.clientX, ev.clientY)) {
-				
+
 				var posX = ev.clientX;
 				var posY = ev.clientY;
 				var dragPosX = posX;
 				var dragPosY = posY;
-				var dragLength = 0;
-				var speed = 0;
-				var direction = 0;
+				var speedX = 0;
+				var speedY = 0;
 				
-				//set speed of the object to 0 as we are now dragging it
-				object.speed = 0;
+				//tell other parts of the application that we are now dragging this object
+				object.dragging = true;
 				
 				//get dragging speed and direction
 				var speedInterval = window.setInterval(function() {
 					
 					var posDiffX = dragPosX - posX;
-					var posDiffY = posY - dragPosY;
+					var posDiffY = dragPosY - posY;
 					
 					//calc speed
-					dragLength = Math.sqrt(Math.pow(Math.abs(posDiffX), 2) + Math.pow(Math.abs(posDiffY), 2));
-					speed = dragLength * 10;
-					
-					//calc direction
-					direction = Math.atan2(posDiffY, posDiffX);
+					speedX = posDiffX * 10;
+					speedY = posDiffY * 10;
 
+					//new position
 					posX = dragPosX;
 					posY = dragPosY;
 					
 				}, 100);
 				
 				//track mouse movements
-				$(this.element).bind('mousemove.dragging', $.proxy(function(ev) {
+				$(this.element).bind('mousemove.dragging-' + i, $.proxy(function(ev) {
 
 					//set new position
 					object.positionX = ev.clientX;
@@ -248,16 +320,19 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 				}, this));
 				
 				//unbind all events on mouse up
-				$(this.element).bind('mouseup.dragging', $.proxy(function(ev) {
+				$(this.element).bind('mouseup.dragging-' + i, $.proxy(function(ev) {
 
-					$(this.element).unbind('mousemove.dragging mouseup.dragging');
+					$(this.element).unbind('mousemove.dragging-' + i + ' mouseup.dragging-' + i);
 					
 					//stop speed checking interval
 					window.clearInterval(speedInterval);
-					
+
 					//set the new speed and direction for the object
-					object.direction = direction;
-					object.speed = speed;
+					object.speedX = speedX;
+					object.speedY = speedY;
+					
+					//dragging stopped
+					object.dragging = false;
 										
 				}, this));				
 				

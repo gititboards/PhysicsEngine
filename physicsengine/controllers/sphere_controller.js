@@ -1,7 +1,7 @@
 /**
  * @tag controllers, home
  */
-Physicsengine.Controllers.Object.extend('Physicsengine.Controllers.Sphere',
+jQuery.Controller.extend('Physicsengine.Controllers.Sphere',
 /* @Static */
 {
 
@@ -9,6 +9,11 @@ Physicsengine.Controllers.Object.extend('Physicsengine.Controllers.Sphere',
 /* @Prototype */
 {
 
+	positionX: 100,
+	positionY: 100,
+	speedX: 0,
+	speedY: 0,
+	dragging: false,
 	radius: 20,
 	color: '#0073EA',
 	
@@ -70,16 +75,125 @@ Physicsengine.Controllers.Object.extend('Physicsengine.Controllers.Sphere',
 	 * 
 	 * Checks if a sphere collides with this one
 	 * 
-	 * @param	{Object} sphere
+	 * @param	{Object} object
 	 * @return	{Boolean}
 	 */
 	
-	checkCollisionWithSphere: function(sphere) {
-		
-		var diffX = Math.abs(this.positionX - sphere.positionX);
-		var diffY = Math.abs(this.positionY - sphere.positionY);
+	checkCollisionWith: function(object) {
 
-		return Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)) <= (this.radius + sphere.radius);
+		var objectType = object.Class._shortName;
+
+		switch(objectType) {
+		
+			case 'sphere':
+				
+				var diffX = Math.abs(this.positionX - object.positionX);
+				var diffY = Math.abs(this.positionY - object.positionY);
+		
+				return Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)) <= (this.radius + object.radius);
+				
+			case 'world':
+				
+				//hitting the left border
+				if(this.positionX - this.radius <= 0) {
+					return true;
+					
+				//hitting the right border
+				} else if(this.positionX + this.radius >= object.canvasWidth) {
+					return true;
+					
+				//hitting the top border
+				} else if(this.positionY - this.radius <= 0) {
+					return true;
+					
+				//hitting the top border
+				} else if(this.positionY + this.radius >= object.canvasHeight) {
+					return true;
+				}
+				
+				return false;
+					
+				
+			default:
+				throw 'Unsupported object type';
+		}
+		
+	},
+	
+	
+	/**
+	 * Collide With
+	 * 
+	 * Collide with another object
+	 * 
+	 * @param	{object} object
+	 */
+	
+	collideWith: function(object) {
+	
+		var objectType = object.Class._shortName;
+		
+		switch(objectType) {
+		
+			case 'sphere':
+				
+				//calc distance between centers
+				var dx = object.positionX - this.positionX;
+				var dy = object.positionY - this.positionY;
+				var distance = Math.sqrt(dx * dx + dy * dy);
+				var ax = dx / distance;
+				var ay = dy / distance;
+				
+				//calc velocity for every sphere
+				var va1 = this.speedX * ax + this.speedY * ay;
+				var vb1 = -this.speedX * ay + this.speedY * ax;
+				var va2 = object.speedX * ax + object.speedY * ay;
+				var vb2 = -object.speedX * ay + object.speedY * ax;
+				var vaP1 = va1 + (1 + 1) * (va2 - va1)/(1 + 1 / 1);
+				var vaP2 = va2 + (1 + 1) * (va1 - va2)/(1 + 1 / 1);
+				this.speedX = vaP1 * ax - vb1 * ay;
+				this.speedY = vaP1 * ay + vb1 * ax;
+				object.speedX = vaP2 * ax - vb2 * ay;
+				object.speedY = vaP2 * ay + vb2 * ax;				
+
+			case 'world':
+				
+				//hitting the left border
+				if(this.positionX - this.radius <= 0) {
+					
+					//flip X direction
+					this.positionX = this.radius;
+					this.speedX = -1 * this.speedX * object.borderSpeedReduction;
+					
+				//hitting the right border
+				} else if(this.positionX + this.radius >= object.canvasWidth) {
+
+					//flip X direction
+					this.positionX = object.canvasWidth - this.radius;
+					this.speedX = -1 * this.speedX * object.borderSpeedReduction;
+					
+				//hitting the top border
+				} else if(this.positionY - this.radius <= 0) {
+
+					//flip Y direction
+					this.positionY = this.radius;
+					this.speedY = -1 * this.speedY * object.borderSpeedReduction;
+					
+				//hitting the bottom border
+				} else if(this.positionY + this.radius >= object.canvasHeight) {
+
+					//flip Y direction
+					this.positionY = object.canvasHeight - this.radius;
+					this.speedY = -1 * this.speedY * object.borderSpeedReduction;
+					
+				}
+				
+				return false;
+					
+				
+			default:
+				throw 'Unsupported object type';
+		}
 		
 	}
 	
