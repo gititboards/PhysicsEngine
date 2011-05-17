@@ -7,7 +7,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 
 	defaultGravity: 1000,
 	defaultFriction: 0.1,
-	defaultBorderSpeedReduction: 0.8,
+	defaultBorderSpeedReduction: 0.5,
 	
 },
 /* @Prototype */
