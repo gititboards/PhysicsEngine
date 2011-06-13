@@ -5,6 +5,7 @@ module("funcunit/synthetic/mouse",{
 			"<input type='radio' name='radio' value='radio1' id='radio1'/>"+
 			"<input type='radio' name='radio' value='radio2' id='radio2'/>"+
 			"<a href='javascript:doSomething()' id='jsHref'>click me</a>"+
+			"<a href='#aHash' id='jsHrefHash'>click me</a>"+
 			"<input type='submit' id='submit'/></div></form>"
 			
 	}
@@ -167,6 +168,20 @@ test("Click Anchor Runs HREF JavaScript", function(){
 	
 	window.doSomething = doSomething;
 })
+
+test("Click! Anchor has href", function(){
+	stop();
+	st.binder("jsHrefHash","click",function(ev){
+		ok(this.href.indexOf("#aHash") > -1 ,"got href");
+	});
+	
+	Syn.click({},"jsHrefHash", function(){
+		equals(window.location.hash,"#aHash","hash set ...")
+		start();
+		window.location.hash=""
+	})
+})
+
 test("Click! Anchor Focuses", 2, function(){
 	st.g("qunit-test-area").innerHTML = "<a href='#abc' id='focusme'>I am visible</a>";
 	
@@ -264,4 +279,49 @@ test("Double Click", function(){
 		equals(eventSequence.join(', '), 'click, click, dblclick', 'expected event sequence for doubleclick');
 		start();
 	})
-})
+});
+
+// tests against IE9's weirdness where popup windows don't have dispatchEvent
+test("h3 click in popup", 1,function(){
+	st.g("qunit-test-area").innerHTML = "";
+
+	
+	stop();
+	/*var page1 = st.rootJoin("funcunit/syn/test/qunit/h3.html"),
+		iframe = document.createElement('iframe'),
+		calls = 0;
+	
+	st.bind(iframe,"load",function(){
+		var el = iframe.contentWindow.document.getElementById('strange')
+		st.bind(el,"click",function(){
+			ok(true, "h3 was clicked");
+			
+		});
+		Syn.click( el ,{}, function(){
+			start();
+		})
+
+			
+			
+	});
+	iframe.src = page1
+	st.g("qunit-test-area").appendChild(iframe);*/
+	
+	
+	var popup = window.open( st.rootJoin("funcunit/syn/test/qunit/h3.html"), "synthing")
+	
+	setTimeout(function(){
+		var el = popup.document.getElementById('strange')
+		st.bind(el,"click",function(){
+			ok(true, "h3 was clicked");
+			
+		});
+		Syn.click( el ,{}, function(){
+			start();
+			popup.close()
+		})
+
+			
+			
+	},500);
+});

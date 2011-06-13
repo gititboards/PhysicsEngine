@@ -1,3 +1,7 @@
+steal.then(function(){
+//steal("synthetic")
+//	.then("mouse")
+//	.then(function() {
 	Syn.key.browsers = {
 		webkit : {
 			'prevent':
@@ -146,3 +150,5 @@
 		}
 		return Syn.mouse.browsers.gecko;
 	})();
+//});
+})

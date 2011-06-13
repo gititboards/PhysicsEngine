@@ -28,12 +28,16 @@ jQuery.Controller.extend('Physicsengine.Controllers.Sphere',
 	 */
 	
 	renderObject: function(context) {
-
-		context.beginPath();
-		context.arc(this.positionX, this.positionY, this.radius, 0, Math.PI*2, true);
-		context.fillStyle = this.color;
-		context.closePath();
-		context.fill();
+	
+		try {
+			context.beginPath();
+			context.arc(this.positionX, this.positionY, this.radius, 0, Math.PI*2, true);
+			context.fillStyle = this.color;
+			context.closePath();
+			context.fill();
+		} catch(e) {
+			console.debug(this);
+		}
 		
 	},
 	
@@ -77,7 +81,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.Sphere',
 				
 				var diffX = Math.abs(this.positionX - object.positionX);
 				var diffY = Math.abs(this.positionY - object.positionY);
-		
+
 				return Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)) <= (this.radius + object.radius);
 				
 			case 'world':
@@ -104,6 +108,46 @@ jQuery.Controller.extend('Physicsengine.Controllers.Sphere',
 				
 			default:
 				throw 'Unsupported object type';
+		}
+		
+	},
+	
+	
+	/**
+	 * Place Next To
+	 * 
+	 * This function changes the coordinates of an object to locate it exactle near the colliding object
+	 * 
+	 * @param	{Object} object
+	 * @return	{Boolean}
+	 */
+	
+	placeNextTo: function(object) {
+
+		var objectType = object.Class._shortName;
+
+		switch(objectType) {
+		
+			case 'sphere':
+				
+				var diffX = this.positionX - object.positionX;
+				var diffY = this.positionY - object.positionY;
+				var angle = Math.atan(Math.abs(diffY) / Math.abs(diffX));
+				var newAbsDiffX = Math.cos(angle) * (this.radius + object.radius);
+				var newAbsDiffY = Math.sin(angle) * (this.radius + object.radius);
+				var newDiffX = diffX < 0 ? newAbsDiffX * (-1) : newAbsDiffX;
+				var newDiffY = diffY < 0 ? newAbsDiffY * (-1) : newAbsDiffY;
+
+				this.positionX = newDiffX + object.positionX;
+				this.positionY = newDiffY + object.positionY;
+				
+				break;
+				
+			case 'world':
+				
+				//for the world border we don't care. should work anyway..
+				return;
+				
 		}
 		
 	},
