@@ -29,15 +29,11 @@ jQuery.Controller.extend('Physicsengine.Controllers.Sphere',
 	
 	renderObject: function(context) {
 	
-		try {
-			context.beginPath();
-			context.arc(this.positionX, this.positionY, this.radius, 0, Math.PI*2, true);
-			context.fillStyle = this.color;
-			context.closePath();
-			context.fill();
-		} catch(e) {
-			console.debug(this);
-		}
+		context.beginPath();
+		context.arc(this.positionX, this.positionY, this.radius, 0, Math.PI*2, true);
+		context.fillStyle = this.color;
+		context.closePath();
+		context.fill();
 		
 	},
 	
@@ -193,13 +189,15 @@ jQuery.Controller.extend('Physicsengine.Controllers.Sphere',
 				this.speedY = vaP1 * ay + vb1 * ax;
 				
 				object.speedX = vaP2 * ax - vb2 * ay;
-				object.speedY = vaP2 * ay + vb2 * ax;		
-
-			case 'world':
+				object.speedY = vaP2 * ay + vb2 * ax;
 				
+				break;
+				
+			case 'world':
+
 				//hitting the left border
 				if(this.positionX - this.radius <= 0) {
-					
+
 					//flip X direction
 					this.positionX = this.radius + 1;
 					this.speedX = -1 * this.speedX * object.borderSpeedReduction;
@@ -227,8 +225,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.Sphere',
 					
 				}
 				
-				return false;
-					
+				break;
 				
 			default:
 				throw 'Unsupported object type';

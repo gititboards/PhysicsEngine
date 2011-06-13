@@ -273,8 +273,9 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 		object.positionY = object.positionY + t * object.speedY;
 		object.speedX = object.speedX - object.speedX * this.friction * t;
 		object.speedY = object.speedY - object.speedY * this.friction * t + this.gravity * t;
+
+		return object;
 		
-		return object;		
 	},
 	
 	
@@ -290,12 +291,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	
 	calculateStateAvg: function(t, object, n) {
 		
-		var temp = new Object();
-		temp.positionX = object.positionX;
-		temp.positionY = object.positionY;
-		temp.speedX = object.speedX;
-		temp.speedY = object.speedY;
-		
+		var temp = jQuery.extend(true, {}, object);
 		for(var k=1;k<=n;k++){
 			temp = this.calculateStateNormal(t, temp);
 		}
@@ -306,6 +302,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 		object.speedY = object.speedY - (object.speedY - temp.speedY)/n;
 		
 		return object;
+		
 	},	
 		
 	
