@@ -282,6 +282,8 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 
 				var posX = ev.clientX;
 				var posY = ev.clientY;
+				var diffToCenterX = ev.clientX - object.positionX;
+				var diffToCenterY = ev.clientY - object.positionY;
 				var dragPosX = posX;
 				var dragPosY = posY;
 				var speedX = 0;
@@ -310,12 +312,12 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 				$(this.element).bind('mousemove.dragging-' + i, $.proxy(function(ev) {
 
 					//set new position
-					object.positionX = ev.clientX;
-					object.positionY = ev.clientY;
+					object.positionX = ev.clientX - diffToCenterX;
+					object.positionY = ev.clientY - diffToCenterY;
 
 					//store mouse position so the speed interval can calculate the pixel diff
-					dragPosX = ev.clientX;
-					dragPosY = ev.clientY;
+					dragPosX = object.positionX;
+					dragPosY = object.positionY;
 
 				}, this));
 				

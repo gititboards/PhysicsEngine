@@ -141,20 +141,27 @@ jQuery.Controller.extend('Physicsengine.Controllers.Sphere',
 				var dx = object.positionX - this.positionX;
 				var dy = object.positionY - this.positionY;
 				var distance = Math.sqrt(dx * dx + dy * dy);
+				
+				//Unit vector in direction of the collision 
 				var ax = dx / distance;
 				var ay = dy / distance;
 				
-				//calc velocity for every sphere
+				//projection of the velocities in these axes
 				var va1 = this.speedX * ax + this.speedY * ay;
 				var vb1 = -this.speedX * ay + this.speedY * ax;
 				var va2 = object.speedX * ax + object.speedY * ay;
 				var vb2 = -object.speedX * ay + object.speedY * ax;
+				
+				//new velocities after the collision
 				var vaP1 = va1 + (1 + 1) * (va2 - va1)/(1 + 1 / 1);
 				var vaP2 = va2 + (1 + 1) * (va1 - va2)/(1 + 1 / 1);
+				
+				//undo the projection
 				this.speedX = vaP1 * ax - vb1 * ay;
 				this.speedY = vaP1 * ay + vb1 * ax;
+				
 				object.speedX = vaP2 * ax - vb2 * ay;
-				object.speedY = vaP2 * ay + vb2 * ax;				
+				object.speedY = vaP2 * ay + vb2 * ax;		
 
 			case 'world':
 				
@@ -162,28 +169,28 @@ jQuery.Controller.extend('Physicsengine.Controllers.Sphere',
 				if(this.positionX - this.radius <= 0) {
 					
 					//flip X direction
-					this.positionX = this.radius;
+					this.positionX = this.radius + 1;
 					this.speedX = -1 * this.speedX * object.borderSpeedReduction;
 					
 				//hitting the right border
 				} else if(this.positionX + this.radius >= object.canvasWidth) {
 
 					//flip X direction
-					this.positionX = object.canvasWidth - this.radius;
+					this.positionX = object.canvasWidth - this.radius - 1;
 					this.speedX = -1 * this.speedX * object.borderSpeedReduction;
 					
 				//hitting the top border
 				} else if(this.positionY - this.radius <= 0) {
 
 					//flip Y direction
-					this.positionY = this.radius;
+					this.positionY = this.radius + 1;
 					this.speedY = -1 * this.speedY * object.borderSpeedReduction;
 					
 				//hitting the bottom border
 				} else if(this.positionY + this.radius >= object.canvasHeight) {
 
 					//flip Y direction
-					this.positionY = object.canvasHeight - this.radius;
+					this.positionY = object.canvasHeight - this.radius - 1;
 					this.speedY = -1 * this.speedY * object.borderSpeedReduction;
 					
 				}
