@@ -93,9 +93,11 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		$('#physicsengine-settings-dialog').dialog({
 			buttons: {
 				'Close': function() {
-					ref.world.controller().setPause(false);
 					$(this).dialog('close');
 				}
+			},
+			close: function() {
+				ref.world.controller().setPause(false);
 			},
 			minWidth: 400,
 			minHeight: 250,
@@ -105,7 +107,6 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		});
 		
 		//init gravity slider
-		
 		$('#physicsengine-settings-gravity-slider').slider({
 			min: 0,
 			max: 10000,
@@ -140,6 +141,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 				ref.world.controller().calculateInterval = ui.value;
 			}
 		});
+		
 		//init render slider
 		$('#physicsengine-settings-drender-slider').slider({
 			min: 1,
@@ -151,6 +153,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 				ref.world.controller().renderInterval = ui.value;
 			}
 		});
+		
 		//init slowmotion slider
 		$('#physicsengine-settings-slowmotion-slider').slider({
 			min: 1,

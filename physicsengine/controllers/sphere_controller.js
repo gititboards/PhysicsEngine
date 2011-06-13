@@ -17,18 +17,6 @@ jQuery.Controller.extend('Physicsengine.Controllers.Sphere',
 	radius: 20,
 	color: '#0073EA',
 	
-	
-	/**
-	 * Constructor
-	 * 
-	 * @return	void
-	 */
-	
-	init: function() {
-
-	
-	},
-	
 
 	/**
 	 * Render object

@@ -99,6 +99,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 		this.objects.push(sphere);
 		
 		return true;
+		
 	},
 	
 	
@@ -111,6 +112,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	 */
 	
 	render: function() {
+		
 		if(!this.doPauseRender){
 			//clear canvas
 			this.canvas2dContext.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
@@ -126,7 +128,9 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 		if(this.doRender) {
 			window.setTimeout($.proxy(this.render, this), this.renderInterval);
 		}
+		
 	},
+	
 	
 	/**
 	 * Calculate
@@ -135,7 +139,9 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	 * 
 	 * @return	void
 	 */
+	
 	calculate: function() {
+		
 		if(!this.doPauseCalc) {
 			var colProb = 0;
 			for(var i = 0; i < this.objects.length; i++) {
@@ -189,8 +195,10 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 		if(this.doCalculate) {
 			window.setTimeout($.proxy(this.calculate, this), this.calculateInterval * this.slowMotion);
 		}
+		
 	},	
 
+	
 	/**
 	 * Start rendering
 	 * 
@@ -198,9 +206,11 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	 */
 	
 	startRendering: function() {
+		
 		this.render();
 		
 	},
+	
 	
 	/**
 	 * Start calculating
@@ -209,6 +219,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	 */
 	
 	startCalculating: function() {
+		
 		this.calculate();
 		
 	},
@@ -232,14 +243,28 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	 * 
 	 * @param	{Number} t	time delta
 	 * @param	{Object} object
+	 * @param	{Boolean} reverse
 	 * 
 	 * @return	{Object}
 	 */
 	
-	calculateState: function(t, object, reverse) {		
+	calculateState: function(t, object, reverse) {	
+		
 		return this.useBetterNumerical ? 
 			this.calculateStateAvg(t, object, reverse, 2) : this.calculateStateNormal(t, object, reverse);
+			
 	},
+	
+	
+	/**
+	 * Calculate State
+	 * 
+	 * @param	{Number} t	time delta
+	 * @param	{Object} object
+	 * @param	{Boolean} reverse
+	 * 
+	 * @return	{Object}
+	 */
 	
 	calculateStateNormal: function(t, object, reverse) {
 
@@ -265,7 +290,21 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 		
 		return object;		
 	},
+	
+	
+	/**
+	 * Calculate State Average
+	 * 
+	 * Use Runge-Kutta to calculate the position 
+	 * 
+	 * @param	{Number} t	time delta
+	 * @param	{Object} object
+	 * @param	{Boolean} reverse
+	 * @param	{Number} n
+	 */
+	
 	calculateStateAvg: function(t, object, reverse, n) {
+		
 		var temp = new Object();
 		temp.positionX = object.positionX;
 		temp.positionY = object.positionY;
@@ -284,6 +323,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 		return object;
 	},	
 		
+	
 	/**
 	 * Reset
 	 * 
@@ -308,14 +348,24 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	
 	},
 	
+	
+	/**
+	 * Set Pause
+	 * 
+	 * Pause the whole rendering and calculation process
+	 * 
+	 * @param	{Boolean} pause
+	 * 
+	 * @return	void
+	 */
+	
 	setPause: function(pause) {
+		
 		this.doPauseRender = pause;
 		this.doPauseCalc = pause;
+		
 	},
-	
-	'mouseup': function(el,ev) {
-		this.doPauseCalc = false;
-	},
+
 	
 	/**
 	 * Mousedown event for object acceleration
@@ -325,7 +375,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	 */
 	
 	'mousedown': function(el, ev) {
-		this.doPauseCalc = true;
+		
 		//check if the user tries to drag an object
 		for(var i = 0; i < this.objects.length; i++) {
 			var object = this.objects[i];
