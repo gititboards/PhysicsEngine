@@ -41,16 +41,19 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		//load the template
 		$(document.body).append(this.view('interface', {
 			gravity: Physicsengine.Controllers.World.defaultGravity,
-			friction: Physicsengine.Controllers.World.defaultFriction
+			friction: Physicsengine.Controllers.World.defaultFriction,
+			calculateInterval: Physicsengine.Controllers.World.defaultCalculateInterval,
+			renderInterval: Physicsengine.Controllers.World.defaultRenderInterval,
+			slowMotion: Physicsengine.Controllers.World.defaultSlowMotion
 		}));
 		
 		//init settings dialog button
-		var settingsButton = $('#physicsengine-settings-button').button().click(function() {
-			
+		var settingsButton = $('#physicsengine-settings-button').button().click($.proxy(function() {
+			this.world.controller().setPause(true);
 			//open the settings dialog
 			$('#physicsengine-settings-dialog').dialog('open');
 			
-		});
+		}, this));
 		
 		//init add sphere button
 		var addSphereButton = $('#physicsengine-addsphere-button').button().mouseup($.proxy(function(ev) {
@@ -85,11 +88,12 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 			
 		}, this));
 		
-				
+		var ref = this;
 		//init settings dialog
 		$('#physicsengine-settings-dialog').dialog({
 			buttons: {
 				'Close': function() {
+					ref.world.controller().setPause(false);
 					$(this).dialog('close');
 				}
 			},
@@ -101,7 +105,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		});
 		
 		//init gravity slider
-		var ref = this;
+		
 		$('#physicsengine-settings-gravity-slider').slider({
 			min: 0,
 			max: 10000,
@@ -117,11 +121,45 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 		$('#physicsengine-settings-friction-slider').slider({
 			min: 0,
 			max: 10,
-			step: 1,
+			step: .1,
 			value: Physicsengine.Controllers.World.defaultFriction,
 			slide: function(ev, ui) {
 				$(this).prev().find('span').html(ui.value);
 				ref.world.controller().friction = ui.value;
+			}
+		});
+		
+		//init calc slider
+		$('#physicsengine-settings-dcalc-slider').slider({
+			min: 1,
+			max: 1000,
+			step: 1,
+			value: Physicsengine.Controllers.World.calculateInterval,
+			slide: function(ev, ui) {
+				$(this).prev().find('span').html(ui.value);
+				ref.world.controller().calculateInterval = ui.value;
+			}
+		});
+		//init render slider
+		$('#physicsengine-settings-drender-slider').slider({
+			min: 1,
+			max: 1000,
+			step: 1,
+			value: Physicsengine.Controllers.World.renderInterval,
+			slide: function(ev, ui) {
+				$(this).prev().find('span').html(ui.value);
+				ref.world.controller().renderInterval = ui.value;
+			}
+		});
+		//init slowmotion slider
+		$('#physicsengine-settings-slowmotion-slider').slider({
+			min: 1,
+			max: 100,
+			step: 1,
+			value: Physicsengine.Controllers.World.slowMotion,
+			slide: function(ev, ui) {
+				$(this).prev().find('span').html(ui.value);
+				ref.world.controller().slowMotion = ui.value;
 			}
 		});
 		

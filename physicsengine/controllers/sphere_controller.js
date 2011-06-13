@@ -166,21 +166,21 @@ jQuery.Controller.extend('Physicsengine.Controllers.Sphere',
 					this.speedX = -1 * this.speedX * object.borderSpeedReduction;
 					
 				//hitting the right border
-				} else if(this.positionX + this.radius >= object.canvasWidth) {
+				} if(this.positionX + this.radius >= object.canvasWidth) {
 
 					//flip X direction
 					this.positionX = object.canvasWidth - this.radius;
 					this.speedX = -1 * this.speedX * object.borderSpeedReduction;
 					
 				//hitting the top border
-				} else if(this.positionY - this.radius <= 0) {
+				} if(this.positionY - this.radius <= 0) {
 
 					//flip Y direction
 					this.positionY = this.radius;
 					this.speedY = -1 * this.speedY * object.borderSpeedReduction;
 					
 				//hitting the bottom border
-				} else if(this.positionY + this.radius >= object.canvasHeight) {
+				} if(this.positionY + this.radius >= object.canvasHeight) {
 
 					//flip Y direction
 					this.positionY = object.canvasHeight - this.radius;
