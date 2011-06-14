@@ -10,8 +10,8 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	defaultBorderSpeedReduction: 0.5,
 	defaultRenderInterval: 20,
 	defaultCalculateInterval: 10,
-	defaultSlowMotion: 1
-	
+	defaultSlowMotion: 1,
+	defaultAutoSlowMoFactor: 15	
 },
 /* @Prototype */
 {
@@ -28,6 +28,8 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 	renderInterval: null, //interval in ms ,
 	calculateInterval: null, //interval in ms ,	
 	slowMotion: null,
+	autoSlowMoFactor: null,
+	autoSlowMoDistance: 300,
 	doPauseRender : false,
 	doPauseCalc : false,
 	aroundCollision: false,
@@ -47,6 +49,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 		this.renderInterval = Physicsengine.Controllers.World.defaultRenderInterval;
 		this.calculateInterval = Physicsengine.Controllers.World.defaultCalculateInterval;
 		this.slowMotion = Physicsengine.Controllers.World.defaultSlowMotion;
+		this.autoSlowMoFactor = Physicsengine.Controllers.World.defaultAutoSlowMoFactor;
 		this.borderSpeedReduction = Physicsengine.Controllers.World.defaultBorderSpeedReduction;
 	
 		//set height and width in pixel in case it is set in percentage
@@ -90,7 +93,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 		for(var i = 0; i < this.objects.length; i++) {
 			var object = this.objects[i];
 			
-			if(sphere.checkCollisionWith(object) || sphere.checkCollisionWith(this)) {
+			if(sphere.checkCollisionWith(object).collision || sphere.checkCollisionWith(this).collision) {
 				return false;				
 			}
 		}
@@ -144,6 +147,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 		
 		if(!this.doPauseCalc) {
 			
+			var currentSlowMoDistance = 10000000000;
 			var colProb = 0;
 			for(var i = 0; i < this.objects.length; i++) {
 
@@ -153,9 +157,13 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 				for(var j = 0; j < this.objects.length; j++) {
 
 					var otherObject = this.objects[j];
+					var collisionCheck = object.checkCollisionWith(otherObject);
 					
+					if(object != otherObject && this.autoSlowMoFactor > 0 && collisionCheck.distance != null && collisionCheck.distance < currentSlowMoDistance){
+						currentSlowMoDistance = collisionCheck.distance;
+					}
 					//check for collision with another object
-					if(object != otherObject && object.checkCollisionWith(otherObject)) {
+					if(object != otherObject && collisionCheck.collision) {
 
 						//to properly collide the objects we have to move the spheres exactly near each other
 						object.placeNextTo(otherObject);
@@ -170,7 +178,7 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 					}
 					
 					//check for collision with the world borders
-					if(object.checkCollisionWith(this)) {
+					if(object.checkCollisionWith(this).collision) {
 
 						//to properly collide the objects we have to place the sphere exactly near the border
 						object.placeNextTo(this);
@@ -185,7 +193,15 @@ jQuery.Controller.extend('Physicsengine.Controllers.World',
 					}
 					
 					
-				}	
+				}
+				if(this.autoSlowMoFactor > 0) {
+					if(currentSlowMoDistance <= this.autoSlowMoDistance){
+						this.slowMotion = 1 + (this.autoSlowMoFactor / this.autoSlowMoDistance) * (this.autoSlowMoDistance-currentSlowMoDistance);
+					}		
+					else{
+						this.slowMotion = 1;
+					}					
+				}
 				
 				if(!object.dragging) {
 					object = this.calculateState(this.calculateInterval / 1000, object)

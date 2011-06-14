@@ -71,6 +71,11 @@ jQuery.Controller.extend('Physicsengine.Controllers.Sphere',
 
 		var objectType = object.Class._shortName;
 
+		var result = {
+			collision: false,
+			distance: null
+		};
+		
 		switch(objectType) {
 		
 			case 'sphere':
@@ -78,34 +83,35 @@ jQuery.Controller.extend('Physicsengine.Controllers.Sphere',
 				var diffX = Math.abs(this.positionX - object.positionX);
 				var diffY = Math.abs(this.positionY - object.positionY);
 
-				return Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2)) <= (this.radius + object.radius);
+				result.distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
+				result.collision = result.distance <= (this.radius + object.radius);				
+				break;
 				
 			case 'world':
 				
 				//hitting the left border
 				if(this.positionX - this.radius <= 0) {
-					return true;
+					result.collision = true;
 					
 				//hitting the right border
 				} else if(this.positionX + this.radius >= object.canvasWidth) {
-					return true;
+					result.collision = true;
 					
 				//hitting the top border
 				} else if(this.positionY - this.radius <= 0) {
-					return true;
+					result.collision = true;
 					
 				//hitting the top border
 				} else if(this.positionY + this.radius >= object.canvasHeight) {
-					return true;
+					result.collision = true;
 				}
-				
-				return false;
-					
+				break;
 				
 			default:
 				throw 'Unsupported object type';
 		}
 		
+		return result;		
 	},
 	
 	

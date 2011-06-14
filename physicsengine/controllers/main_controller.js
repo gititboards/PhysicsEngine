@@ -44,7 +44,8 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 			friction: Physicsengine.Controllers.World.defaultFriction,
 			calculateInterval: Physicsengine.Controllers.World.defaultCalculateInterval,
 			renderInterval: Physicsengine.Controllers.World.defaultRenderInterval,
-			slowMotion: Physicsengine.Controllers.World.defaultSlowMotion
+			slowMotion: Physicsengine.Controllers.World.defaultSlowMotion,
+			autoSlowMoFactor: Physicsengine.Controllers.World.defaultAutoSlowMoFactor
 		}));
 		
 		//init settings dialog button
@@ -163,6 +164,17 @@ jQuery.Controller.extend('Physicsengine.Controllers.Main',
 			slide: function(ev, ui) {
 				$(this).prev().find('span').html(ui.value);
 				ref.world.controller().slowMotion = ui.value;
+			}
+		});
+		//init auto-slowmotion slider
+		$('#physicsengine-settings-autoslowmotion-slider').slider({
+			min: 0,
+			max: 100,
+			step: 1,
+			value: Physicsengine.Controllers.World.autoSlowMoFactor,
+			slide: function(ev, ui) {
+				$(this).prev().find('span').html(ui.value);
+				ref.world.controller().autoSlowMoFactor = ui.value;
 			}
 		});
 		
